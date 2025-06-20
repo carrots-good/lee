@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>이가람의 블로그</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(10, 10, 40, 0.8);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-shadow: 2px 2px 5px #000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      transition: opacity 0.3s ease;
+    }
+
+    header.hide {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      padding: 0 20px;
+      overflow: hidden;
+      border: none;
+    }
+
+    form {
+      max-width: 960px;
+      margin: 25px auto 10px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 15px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.3s ease;
+      align-items: center;
+    }
+
+    form.hide {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      margin: 0 auto;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    input[type="text"],
+    textarea {
+      flex: 1 1 60%;
+      border-radius: 10px;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.8);
+      color: #222;
+      resize: vertical;
+      outline: none;
+      transition: box-shadow 0.2s ease;
+      min-width: 0;
+    }
+
+    input:focus,
+    textarea:focus {
+      box-shadow: 0 0 10px #ffd27f;
+    }
+
+    input[type="file"] {
+      flex: 1 1 20%;
+      padding: 6px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      background: #fff;
+      color: #222;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="file"]:hover {
+      background-color: #ffd27f;
+    }
+
+    button {
+      flex: 1 1 15%;
+      padding: 12px;
+      background: #ffd27f;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #222;
+      min-width: 100px;
+    }
+
+    button:hover {
+      background: #ffba00;
+      box-shadow: 0 0 12px #ffba00;
+    }
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 20px auto;
+      display: flex;
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      overflow: hidden;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    main.full-view {
+      max-width: 100vw;
+      margin: 20px auto 40px auto;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      display: block;
+      padding: 40px 60px;
+      box-shadow: none;
+    }
+
+    main.full-view #postList {
+      display: none;
+    }
+
+    main.full-view #postContent {
+      width: 100%;
+      color: #fff;
+      font-size: 1.25rem;
+      line-height: 1.7;
+      white-space: pre-line;
+      user-select: text;
+    }
+
+    #postList {
+      width: 30%;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.07);
+      overflow-y: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      transition: opacity 0.3s ease;
+    }
+
+    #postList.hide {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #postList h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 6px;
+    }
+
+    #postsUl {
+      list-style: none;
+      padding: 0;
+    }
+
+    #postsUl li {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      margin-bottom: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #fff;
+      user-select: none;
+    }
+
+    #postsUl li:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.03);
+      box-shadow: 0 0 8px #ffd27f;
+    }
+
+    #postContent {
+      width: 70%;
+      padding: 25px;
+      overflow-y: auto;
+      color: #fff;
+    }
+
+    #postContent h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      user-select: text;
+    }
+
+    #postContent small {
+      display: block;
+      margin-bottom: 15px;
+      color: #ffd27f;
+      font-weight: 600;
+      user-select: text;
+    }
+
+    #postContent p {
+      white-space: pre-line;
+      line-height: 1.7;
+      font-size: 1.15rem;
+      user-select: text;
+      margin-bottom: 20px;
+    }
+
+    #postContent img {
+      max-width: 100%;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+      user-select: none;
+    }
+
+    #backBtn, #editBtn, #saveBtn, #cancelBtn, #deleteBtn {
+      margin-top: 15px;
+      background: #ffd27f;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #222;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      margin-right: 10px;
+    }
+
+    #backBtn:hover, #editBtn:hover, #saveBtn:hover, #cancelBtn:hover, #deleteBtn:hover {
+      background: #ffba00;
+      box-shadow: 0 0 12px #ffba00;
+    }
+
+    /* 편집 중 입력 스타일 */
+    #postContent input[type="text"],
+    #postContent textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      resize: vertical;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+      font-family: 'Pretendard', 'Segoe UI', sans-serif;
+      color: #222;
+    }
+
+    #postContent textarea {
+      min-height: 150px;
+    }
+
+    #imagePreview {
+      max-width: 100%;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    이가람의 블로그
+
+  </header>
+
+  <form id="postForm">
+    <input type="text" id="title" placeholder="제목을 입력하세요" required />
+    <textarea id="content" placeholder="내용을 입력하세요" required></textarea>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <button type="submit">글 작성</button>
+  </form>
+
+  <main id="mainArea">
+    <section id="postList">
+      <h3>글 목록</h3>
+      <ul id="postsUl"></ul>
+    </section>
+    <section id="postContent">
+      <p>글을 작성하거나, 목록에서 글을 클릭해보세요.</p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const imageUpload = document.getElementById('imageUpload');
+    const postsUl = document.getElementById('postsUl');
+    const postContent = document.getElementById('postContent');
+    const mainArea = document.getElementById('mainArea');
+    const header = document.getElementById('header');
+    const postListSection = document.getElementById('postList');
+
+    let posts = JSON.parse(localStorage.getItem('igaramsPosts') || '[]');
+    let currentImageData = ''; // 업로드 이미지 base64 저장용
+    let editingIndex = null;   // 편집중인 글 인덱스 저장
+
+    // 이미지 업로드 시 base64로 읽기
+    imageUpload.addEventListener('change', () => {
+      const file = imageUpload.files[0];
+      if (!file) {
+        currentImageData = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        currentImageData = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      if (!title || !content) return alert('제목과 내용을 모두 입력하세요.');
+
+      const date = new Date().toISOString().slice(0, 10);
+
+      // 새 글 추가
+      posts.push({ title, content, date, image: currentImageData });
+      localStorage.setItem('igaramsPosts', JSON.stringify(posts));
+
+      currentImageData = '';
+      form.reset();
+      renderPostList();
+    });
+
+    function renderPostList() {
+      postsUl.innerHTML = '';
+      posts.forEach((post, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${post.title} (${post.date})`;
+        li.onclick = () => showPostSingle(i);
+        postsUl.appendChild(li);
+      });
+    }
+
+    function showPostSingle(index) {
+      editingIndex = null;
+      const post = posts[index];
+      if (!post) return;
+
+      header.classList.add('hide');
+      form.classList.add('hide');
+      postListSection.classList.add('hide');
+      mainArea.classList.add('full-view');
+
+      let imageHTML = '';
+      if (post.image) {
+        imageHTML = `<img id="imagePreview" src="${post.image}" alt="첨부 이미지" />`;
+      }
+
+      postContent.innerHTML = `
+        <h2>${escapeHtml(post.title)}</h2>
+        <small>${post.date}</small>
+        ${imageHTML}
+        <p>${escapeHtml(post.content)}</p>
+        <button id="editBtn">수정</button>
+        <button id="deleteBtn">삭제</button>
+        <button id="backBtn">목록으로</button>
+      `;
+
+      document.getElementById('backBtn').onclick = backToList;
+      document.getElementById('editBtn').onclick = () => editPost(index);
+      document.getElementById('deleteBtn').onclick = () => deletePost(index);
+    }
+
+    function backToList() {
+      header.classList.remove('hide');
+      form.classList.remove('hide');
+      postListSection.classList.remove('hide');
+      mainArea.classList.remove('full-view');
+      postContent.innerHTML = '<p>글을 작성하거나, 목록에서 글을 클릭해보세요.</p>';
+      renderPostList();
+      editingIndex = null;
+    }
+
+    function editPost(index) {
+      editingIndex = index;
+      const post = posts[index];
+      if (!post) return;
+
+      header.classList.add('hide');
+      form.classList.add('hide');
+      postListSection.classList.add('hide');
+      mainArea.classList.add('full-view');
+
+      postContent.innerHTML = `
+        <input type="text" id="editTitle" value="${escapeHtml(post.title)}" />
+        <textarea id="editContent">${escapeHtml(post.content)}</textarea>
+        <div>
+          <label for="editImageUpload" style="cursor:pointer; color:#ffd27f; text-decoration: underline; font-weight:bold;">사진 변경</label>
+          <input type="file" id="editImageUpload" accept="image/*" style="display:none;" />
+        </div>
+        <img id="editImagePreview" src="${post.image || ''}" alt="이미지 미리보기" />
+        <div style="margin-top: 15px;">
+          <button id="saveBtn">저장</button>
+          <button id="cancelBtn">취소</button>
+        </div>
+      `;
+
+      const editImageUpload = document.getElementById('editImageUpload');
+      const editImagePreview = document.getElementById('editImagePreview');
+
+      // 사진 변경 파일 선택 시
+      editImageUpload.addEventListener('change', () => {
+        const file = editImageUpload.files[0];
+        if (!file) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = e => {
+          editImagePreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('saveBtn').onclick = () => {
+        const newTitle = document.getElementById('editTitle').value.trim();
+        const newContent = document.getElementById('editContent').value.trim();
+        if (!newTitle || !newContent) return alert('제목과 내용을 모두 입력하세요.');
+
+        // 이미지 저장: 파일 선택이 있으면 바꿔주고, 없으면 기존 이미지 유지
+        if (editImageUpload.files.length > 0) {
+          const file = editImageUpload.files[0];
+          const reader = new FileReader();
+          reader.onload = e => {
+            saveEditedPost(newTitle, newContent, e.target.result);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // 이미지 변경 없으면 기존 이미지 유지
+          saveEditedPost(newTitle, newContent, post.image);
+        }
+      };
+
+      document.getElementById('cancelBtn').onclick = () => {
+        showPostSingle(index);
+      };
+    }
+
+    function saveEditedPost(title, content, image) {
+      if (editingIndex === null) return;
+      const post = posts[editingIndex];
+      post.title = title;
+      post.content = content;
+      post.image = image;
+      post.date = new Date().toISOString().slice(0, 10);
+
+      localStorage.setItem('igaramsPosts', JSON.stringify(posts));
+      showPostSingle(editingIndex);
+      editingIndex = null;
+      renderPostList();
+    }
+
+    function deletePost(index) {
+      if (!confirm('정말 이 글을 삭제하시겠습니까?')) return;
+      posts.splice(index, 1);
+      localStorage.setItem('igaramsPosts', JSON.stringify(posts));
+      backToList();
+    }
+
+    // 특수문자 이스케이프 함수 (XSS 방지)
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    renderPostList();
+  </script>
+</body>
+</html>
